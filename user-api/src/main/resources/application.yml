@@ -1,0 +1,7 @@
+server:
+  error:
+    include-message: always
+  port: 8000
+spring:
+  application:
+    name: user-api
