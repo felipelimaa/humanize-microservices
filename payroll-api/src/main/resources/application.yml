@@ -1,0 +1,10 @@
+spring:
+  application:
+    name: payroll-api
+  aop:
+    proxy-target-class: false
+server:
+  port: ${PORT_PAYROLL_API:8100}
+feign:
+  httpclient:
+    enabled: true
