@@ -1,0 +1,57 @@
+version: '3.8'
+services:
+  eureka-server:
+    image: felipelimaa/humanize-eureka-server:1.0.0
+    ports:
+      - "8761:8761"
+    expose:
+      - "8761"
+    environment: 
+      - PORT_EUREKA=8761
+    networks:
+      - humanize-microservices
+
+  api-gateway:
+    image: felipelimaa/humanize-api-gateway:1.0.0
+    ports:
+      - "8765:8765"
+    expose:
+      - "8765"
+    depends_on:
+      - eureka-server
+    environment:
+      - PORT_GATEWAY=8765
+      - EUREKA_URL=http://eureka-server:8761/eureka
+    networks:
+      - humanize-microservices
+
+  user-api:
+    image: felipelimaa/humanize-user-api:1.0.0
+    ports:
+      - "8000:8000"
+    depends_on:
+      - eureka-server
+      - api-gateway
+    environment:
+      - PORT_USER_API=8000
+      - EUREKA_URL=http://eureka-server:8761/eureka
+    networks:
+      - humanize-microservices
+
+  payroll-api:
+    image: felipelimaa/humanize-payroll-api:1.0.0
+    ports:
+      - "8200:8200"
+    depends_on:
+      - eureka-server
+      - api-gateway
+      - user-api
+    environment:
+      - PORT_PAYROLL_API=8200
+      - EUREKA_URL=http://eureka-server:8761/eureka
+    networks:
+      - humanize-microservices
+  
+networks:
+  humanize-microservices:
+    driver: bridge
